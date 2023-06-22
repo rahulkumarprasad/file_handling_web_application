@@ -1,0 +1,55 @@
+<!-- Folder create modal -->
+  <!-- Modal -->
+  <div class="modal fade" id="createFolder" tabindex="-1" aria-labelledby="createFolderLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{% url 'folder_create'%}" method="POST" name="create_folder_form" id="create_folder_form">    
+            <div class="modal-header">
+                {%csrf_token%}
+            <h5 class="modal-title" id="createFolderLabel">Create-Folder</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12" id="create_folder_message">
+                </div>
+                <div class="col-md-12">
+                    <label for="f_name">Folder Name</label>
+                    <input type="text" name="f_name" id="f_name" class="form-control" placeholder="Folder Name" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- File upload model -->
+
+  <div class="modal fade" id="uploadFile" tabindex="-1" aria-labelledby="uploadFileLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="/" method="POST" name="file_upload" id="file_upload">    
+            <div class="modal-header">
+                {%csrf_token%}
+            <h5 class="modal-title" id="uploadFileLabel">Create-Folder</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12" id="create_folder_message">
+                </div>
+                <div class="col-md-12">
+                    <label for="f_name">Select Files</label>
+                    <input type="file" name="files" id="files" class="form-control" multiple>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Upload</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>

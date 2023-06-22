@@ -2,4 +2,3 @@
 *.pyc
 __pycache__
 !migrations/__init__.py
-migrations

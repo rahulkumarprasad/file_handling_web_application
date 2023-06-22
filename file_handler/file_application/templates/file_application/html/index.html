@@ -1,0 +1,222 @@
+{%extends 'file_application/common/base.html' %}
+
+{%block body%}
+
+  {% include 'file_application/html/modal.html' %}
+
+  <div class="container-fluid ">
+      <div class="row py-2 my-3">
+        <div class="col-md-2 col-6">
+          <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#uploadFile"><i class="fa fa-plus" aria-hidden="true"></i> Upload File</button>
+        </div>
+        {% if not folder_id %}
+        <div class="col-md-2 col-6">
+          <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#createFolder">Create Folder</button>
+        </div>
+        {%endif%}
+        
+      </div>
+      {% if files.count == 0 and folders == None %}
+      <div class="row w-100 h-100 mx-1" style="height: 20rem !important;">
+        <div class="col-md-12">
+          <h5 class="text-center align-self-center text-danger">Empty Storage</h5>
+        </div>
+      </div>
+      {%endif%}
+      {%if folders%}
+      <div class="row w-100 h-100 mx-1 border border-secondary px-2 py-1">
+          <div class="col-md-12">
+            <h5 ><u>Folders</u></h5>
+          </div>
+          {%for fld in folders %}
+          <div class="card mx-md-3 my-2 px-md-1" style="width: 10rem;">
+            <div class="card-body w-100 px-1">
+              <div class="row w-100 mx-0 px-0">
+                <div class="col-md-10 col-10 mx-0">
+                  <a href="{%url 'folder' fld.id %}" class="w-100">
+                  <h6 class="card-title w-100">
+                    <i class="fa fa-folder fa-lg" aria-hidden="true" ></i>
+                    {{fld.f_name}}
+                  </h6>
+                  </a>
+                </div>
+                <div class="col-md-1 col-1 mx-0 px-0">
+                  <i style="cursor: pointer;" class="fa fa-trash-o justify-content-end w-100" onclick="delete_folder(event,'{{fld.id}}', '{{fld.f_name}}')" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endfor%}
+      </div>
+      {%endif%}
+      
+      {%if files.count != 0 %}
+      <div class="row w-100 h-100 mx-1 my-2 border border-secondary px-2 py-1">
+          <div class="col-md-12">
+            <h5 ><u>Files</u></h5>
+          </div>
+          {%load custom_template %}
+          {%for file in files %}
+          <div class="card mx-2 my-2" style="width: 18rem;">
+            <a style="cursor: pointer;" href="/media/{{file.file}}" target="_blank">
+            {{file|get_html_view_for_file_type|safe}}
+            </a>
+            <div class="card-body row">
+              <p class="card-text col-10 mx-0 px-0" style="font-size: 0.8rem;">{{file.file_name}}</p>
+              <i style="cursor: pointer;" class="fa fa-trash-o col-1 mx-0 px-0  align-self-end" onclick="delete_file(event,'{{file.id}}', '{{file.file_name}}')" aria-hidden="true"></i>
+            </div>
+          </div>
+          {%endfor%}
+      </div>
+      {%endif%}
+  </div>
+
+<script>
+
+  //{% if not folder_id %}
+  //Function for handling folder create
+    function success(res){
+        // success function for handling success response api
+        stop_loading();
+        document.getElementById("create_folder_form").reset();
+        console.log("success");
+        let ele = document.createElement("p");
+        ele.className = "text-success"
+        ele.innerHTML = res
+        $("#create_folder_message").html(ele)
+        setTimeout(() => {
+          ele.remove();
+          location.reload();
+        }, 2000);
+      }
+
+    function error(res){
+      //error handling function for create folder error response
+      stop_loading();
+      let ele = document.createElement("p");
+      ele.className = "text-error"
+      ele.innerHTML = res.responseText
+      $("#create_folder_message").html(ele)
+      setTimeout(() => {
+        ele.remove();
+      }, 3000);
+    }
+
+  $( "#create_folder_form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      start_loading();
+      //Form submition handler for create folder
+      let data = new FormData();
+      data.append("name",$("#name").val());
+      data.append("csrfmiddlewaretoken",$("[name=csrfmiddlewaretoken]").val());
+      data.append("f_name",$("#f_name").val());
+      url = '{%url "folder_create"%}'
+      $.ajax({
+        url:url,
+        method:"POST",
+        data:data,
+        success:success,
+        error:error,
+        cache:false,
+        contentType:false,
+        processData:false
+      });
+    });
+
+    //this function is used for deleting folder
+    function delete_folder(event,id, name){
+      if(confirm("Are you sure you want to delete folder "+ name) == true){
+      url = '{%url "folder_delete" %}'
+      start_loading();
+      let data = new FormData();
+      data.append("csrfmiddlewaretoken",$("[name=csrfmiddlewaretoken]").val());
+      data.append("fld_id",id);
+      $.ajax({
+        url:url,
+        method:"POST",
+        data:data,
+        cache:false,
+        contentType:false,
+        processData:false,
+        success: (res)=>{
+          stop_loading();
+          location.reload();
+        },
+        error:(res)=>{
+          stop_loading();
+          alert("Error occured, Message: "+res.responseText);
+        }
+      })
+    }
+    }
+
+//{%endif%}
+
+
+    //this function is used for deleting file
+    function delete_file(event, id, name){
+      if(confirm("Are you sure you want to delete file " + name) == true){
+      url = '{%url "file_delete" %}'
+      start_loading();
+      let data = new FormData();
+      data.append("csrfmiddlewaretoken",$("[name=csrfmiddlewaretoken]").val());
+      data.append("f_id",id);
+      $.ajax({
+        url:url,
+        method:"POST",
+        data:data,
+        cache:false,
+        contentType:false,
+        processData:false,
+        success: (res)=>{
+          stop_loading();
+          location.reload();
+        },
+        error:(res)=>{
+          stop_loading();
+          alert("Error occured, Message: "+res.responseText);
+        }
+      })
+    }
+    }
+
+
+    //This function is used for uploading myltiple text and image files
+    $( "#file_upload" ).on( "submit", function( event ) {
+      event.preventDefault();
+      start_loading();
+      let data = new FormData();
+      data.append("csrfmiddlewaretoken",$("[name=csrfmiddlewaretoken]").val());
+      let files = document.getElementById("files").files;
+      for(let i=0;i<files.length;i++){
+      data.append("files",files[i]);
+      }
+      url = "/"
+      parent_folder = '{{folder_id}}'
+      if(parent_folder.trim() != ""){
+        url+="?parent_folder=" + parent_folder;
+      }
+      $.ajax({
+        url:url,
+        method:"POST",
+        data:data,
+        cache:false,
+        contentType:false,
+        processData:false,
+        success: (res)=>{
+          stop_loading();
+          location.reload();
+        },
+        error:(res)=>{
+          stop_loading();
+          alert("Error occured, Message: "+res.responseText);
+        }
+      });
+
+    });
+
+
+</script>
+
+
+{%endblock%}

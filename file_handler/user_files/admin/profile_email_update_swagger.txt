@@ -1,0 +1,84 @@
+get:
+      tags:
+        - Profile
+      summary: To get profile details by id
+      description: To get profile details by member id
+      operationId: get-profile-get
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  - firstName: Ashish
+                    lastName: C
+                    joinDate: 1643897771637
+                    member_id: '250'
+                    birthDate: '1985-01-23'
+                    zip: '23220'
+                    phoneNumber: '1111111112'
+                    emailAddress: 'iamjoe@gmail.com'
+                    biometric: false
+                    phoneNumberVerified: false
+                    profile_picture: >-
+                      b'/9j/4AAQSkZJRgABAQAAAQABAAD/4gIoSUNDH3ACp2AAAoAEKAECLkAoLgdwCAi9wAIAAIbIcgEqxuj9L+x3aLj8gHDk9N4+26/639jzLgD59do8+3mRoAOLST4NHuAbiIjdDgA0MlwbawCwdv7SdgD6PF/i45I+Q+QDqwxABplAAAAAEAAEDAAFAAAAKE7sAAUAARgAUAAAAEAAFQoARCgAEAAoAABAAKAACAAAgAAABFIABe4ACgACA7AAAwAAACnYgAAoAAgAFIABSAACgATuUAEAABGHz+AAgioAKdwAEAAFO5AAigAAFyAFAAAAAAABAAAPcAAAgADAAAAAEAAoAAh2HYAKBd/sAAAAQAAAj5AAAAKpAAA7AAAAEXsgAFQoAAAAT/wCSgAQAAAAECgBQgAAoAEAABFAAdgABB3ACKiABQAFH/9k='
+                    preferred_name: ashishc
+                    externalAccounts:
+                      linked: false
+                      accounts:
+                        - accountName: Plaid IRA
+                          maskedNumber: '5555'
+                          institution: null
+                        - accountName: Plaid Saving
+                          maskedNumber: '1111'
+                          institution: Plaid Silver Standard 0.1% Interest Saving
+                    creditScoreEnabled: false
+                status: Success
+                message: Successfully Fetched
+        '400':
+          description: Invalid request
+        '401':
+          description: Failed to process the request
+        '500':
+          description: Internal server error
+    patch:
+      tags:
+        - Profile
+      summary: email address PATCH
+      description: To update email address in database
+      operationId: patch-email-patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                emailAddress:
+                  type: string
+                  example: 'iamjoe@gmail.com'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: 'true'
+                  status:
+                    example: Updated
+                  message:
+                    example: Successfully Updated
+              example:
+                success: 'true'
+                status: Updated
+                message: Successfully Updated
+        '400':
+          description: Invalid request
+        '401':
+          description: Failed to process the request
+        '500':
+          description: Internal server error
