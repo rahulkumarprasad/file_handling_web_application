@@ -1,4 +1,6 @@
 ************************ File Handling Test Task ****************************************
+Note:
+- please use the application in chrome browser
 
 ########################### Starting application ############################### 
 -Requirements
